@@ -1,4 +1,3 @@
-
 let timer = 25 * 60; // 25分（秒）
 let interval = null;
 let isRunning = false;

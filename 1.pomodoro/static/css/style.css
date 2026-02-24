@@ -32,10 +32,23 @@ body {
 }
 #timer {
     font-size: 64px;
-    margin: 32px 0;
     font-weight: bold;
     color: #333;
     letter-spacing: 2px;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: transparent;
+    margin: 0;
+    pointer-events: none;
+}
+#timerGauge {
+    display: block;
+    margin: 0 auto;
+    background: transparent;
 }
 .buttons {
     display: flex;

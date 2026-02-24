@@ -8,6 +8,12 @@ let pomodoroCount = 0;
 let startTime = null;
 
 const timerDisplay = document.getElementById('timer');
+const gaugeCanvas = document.getElementById('timerGauge');
+const gaugeCtx = gaugeCanvas.getContext('2d');
+const GAUGE_RADIUS = 80;
+const GAUGE_LINE_WIDTH = 10;
+const FOCUS_TOTAL = 25 * 60;
+const BREAK_TOTAL = 5 * 60;
 const startBtn = document.getElementById('startBtn');
 const pauseBtn = document.getElementById('pauseBtn');
 const resetBtn = document.getElementById('resetBtn');
@@ -18,6 +24,10 @@ function updateDisplay() {
     const minutes = Math.floor(timer / 60);
     const seconds = timer % 60;
     timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    // Gauge描画
+    let total = mode === 'focus' ? FOCUS_TOTAL : BREAK_TOTAL;
+    let elapsed = total - timer;
+    drawGauge(elapsed / total, mode);
     if (mode === 'focus') {
         statusDiv.textContent = '集中時間';
         statusDiv.style.color = '#e57373';
@@ -27,6 +37,31 @@ function updateDisplay() {
         statusDiv.style.color = '#64b5f6';
         timerDisplay.style.color = '#1976d2';
     }
+}
+
+function drawGauge(percent, mode) {
+    gaugeCtx.clearRect(0, 0, gaugeCanvas.width, gaugeCanvas.height);
+    // 背景円
+    gaugeCtx.beginPath();
+    gaugeCtx.arc(gaugeCanvas.width/2, gaugeCanvas.height/2, GAUGE_RADIUS, 0, 2 * Math.PI);
+    gaugeCtx.strokeStyle = '#eee';
+    gaugeCtx.lineWidth = GAUGE_LINE_WIDTH;
+    gaugeCtx.stroke();
+    // 進捗円弧
+    let color = mode === 'focus' ? '#e57373' : '#64b5f6';
+    gaugeCtx.beginPath();
+    gaugeCtx.arc(
+        gaugeCanvas.width/2,
+        gaugeCanvas.height/2,
+        GAUGE_RADIUS,
+        -Math.PI/2,
+        -Math.PI/2 + 2 * Math.PI * percent,
+        false
+    );
+    gaugeCtx.strokeStyle = color;
+    gaugeCtx.lineWidth = GAUGE_LINE_WIDTH;
+    gaugeCtx.lineCap = 'round';
+    gaugeCtx.stroke();
 }
 
 function switchMode() {
